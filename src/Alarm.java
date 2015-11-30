@@ -71,6 +71,6 @@ public class Alarm {
 		if (isAlarmOn) {
 			return "Alarm Time: " + hour + ":" + minute + " | Current Setting: On";
 		}
-		return hour + ":" + minute + " Current Setting: Off";
+		return "Alarm Time: " + hour + ":" + minute + " Current Setting: Off";
 	}
 }

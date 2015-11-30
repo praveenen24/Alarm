@@ -113,18 +113,18 @@ public class AlarmView extends JFrame implements Observer {
 			}
 		}
 	};
-	
+
 	public int snoozeOrStop() {
 		Object[] choices = {"Stop", "Snooze"};
 		Object defaultChoice = choices[0];
 		int result = JOptionPane.showOptionDialog(this,
-		             "Select one of the values",
-		             "Title message",
-		             JOptionPane.YES_NO_OPTION,
-		             JOptionPane.QUESTION_MESSAGE,
-		             null,
-		             choices,
-		             defaultChoice);
+				"Select one of the values",
+				"Title message",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				choices,
+				defaultChoice);
 		System.out.println(result);
 		return result;
 	}
@@ -149,9 +149,13 @@ public class AlarmView extends JFrame implements Observer {
 					a.setIsAlarmOn(false);
 					a.stopAlarm();
 				}
+				Runnable r = new Runnable() {
+					public void run() {
+						model.run();
+					}
+				};
+				new Thread(r).start();
 			}
 		});
-		while(a.getTriggered()) {
-		}model.run();
 	}
 }

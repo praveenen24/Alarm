@@ -5,6 +5,7 @@ import java.util.Observable;
 
 public class AlarmModel extends Observable {
 	private ArrayList<Alarm> alarms;
+	private boolean run = true;
 
 	public AlarmModel() {
 		alarms = new ArrayList<Alarm>();
@@ -15,12 +16,10 @@ public class AlarmModel extends Observable {
 	}
 
 	public void run() {
-		while(true) {
+		while(run) {
 			for (Alarm a : alarms) {
 				if (a.getIsAlarmOn()) {
 					if (a.getTime().equals(getCurrentTime()) && !a.getTriggered()) {
-//						System.out.println("Reached");
-//						a.playAlarm();
 						update(a);
 						return;
 					}
