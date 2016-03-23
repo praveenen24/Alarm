@@ -1,6 +1,7 @@
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Observable;
 
 public class AlarmModel extends Observable {
@@ -19,7 +20,11 @@ public class AlarmModel extends Observable {
 		while(run) {
 			for (Alarm a : alarms) {
 				if (a.getIsAlarmOn()) {
-					if (a.getTime().equals(getCurrentTime()) && !a.getTriggered()) {
+					Calendar c = GregorianCalendar.getInstance();
+					System.out.println(c.get(Calendar.HOUR));
+					if (a.getHour() == c.get(Calendar.HOUR) 
+							&& a.getHour() == c.get(Calendar.MINUTE) 
+							&& !a.getTriggered()) {
 						update(a);
 						return;
 					}
@@ -28,11 +33,8 @@ public class AlarmModel extends Observable {
 		}
 	}
 
-	public String getCurrentTime() {
-		Calendar c = Calendar.getInstance();
-		SimpleDateFormat s = new SimpleDateFormat("HH:mm");
-		String currentTime = s.format(c.getTime());
-		return currentTime;
+	public Date getCurrentTime() {
+		return Calendar.getInstance().getTime();
 	}
 	
 	public void update(Alarm a) {

@@ -1,9 +1,16 @@
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -25,7 +32,18 @@ public class AlarmView extends JFrame implements Observer {
 	private AlarmModel model;
 	private JList<Alarm> alarmList;
 	private DefaultListModel<Alarm> alarmListModel = new DefaultListModel<Alarm>();
+	private JLabel timeLabel;
+	private Timer t;
 
+	private TimerTask task = new TimerTask() {
+		
+		@Override
+		public void run() {
+			SimpleDateFormat s = new SimpleDateFormat("HH:mm:ss");
+			timeLabel.setText(s.format(Calendar.getInstance().getTime()));
+		}
+	};
+	
 	public AlarmView(AlarmModel m) {
 		super("Alarm Clock");
 		model = m;
@@ -36,18 +54,23 @@ public class AlarmView extends JFrame implements Observer {
 		setSize(400,400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+		t = new Timer();
+		t.scheduleAtFixedRate(task, 0, 1000);
 		model.run();
 	}
 
 	public JPanel mainPanel() {
 		JPanel panel = new JPanel(new GridLayout(0,1));
+		SimpleDateFormat s = new SimpleDateFormat("HH:mm:ss");
+		timeLabel = new JLabel(s.format(Calendar.getInstance().getTime()));
+		timeLabel.setFont(new Font(timeLabel.getFont().getName(), Font.BOLD, 90));
+		panel.add(timeLabel);
 		panel.add(new JScrollPane(alarmList));
 		return panel;
 	}
 
 	public JMenuBar getBar() {
 		JMenuBar bar = new JMenuBar();
-
 		JMenu alarmMenu = new JMenu("Alarm");
 		JMenuItem addAlarm = new JMenuItem("Add");
 		addAlarm.addActionListener(addAlarmListener);
@@ -97,16 +120,12 @@ public class AlarmView extends JFrame implements Observer {
 					File f = chooser.getSelectedFile();
 					Alarm a;
 					int h = Integer.parseInt((String) hourBox.getSelectedItem());
+					int m = Integer.parseInt((String) minuteBox.getSelectedItem());
 					if (((String)amPmBox.getSelectedItem()).equals("PM")) {
 						h = h + 12;
+						if (h == 24) h = 0;
 					}
-					if (optionBox.getSelectedItem().equals("On")) {						
-						a = new Alarm(String.valueOf(h), (String) minuteBox.getSelectedItem(),
-								f, true);
-					} else {
-						a = new Alarm(String.valueOf(h), (String) minuteBox.getSelectedItem(),
-								f, false);
-					}
+					a = new Alarm(h, m, f, true);
 					model.addAlarm(a);
 					alarmListModel.addElement(a);
 				}
@@ -139,9 +158,9 @@ public class AlarmView extends JFrame implements Observer {
 			public void run() {
 				int result = snoozeOrStop();
 				if (result == 0) {
-					int minute = Integer.parseInt(a.getMinute());
-					minute+=1;
-					a.setMinute(String.valueOf(minute));
+					//int minute = Integer.parseInt(a.getMinute());
+					//minute+=1;
+					//a.setMinute(String.valueOf(minute));
 					a.setTriggered(false);
 					a.stopAlarm();
 				} else {
