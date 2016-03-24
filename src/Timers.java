@@ -1,3 +1,5 @@
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,20 +42,25 @@ public class Timers extends JPanel {
 		super(new GridLayout(0,1));
 		this.hours = hours;
 		this.minutes = minutes;
-		if (secondsLeft == 0) this.secondsLeft = 60;
-		else this.secondsLeft = secondsLeft;
-		timeLabel = new JLabel(hours + ":" + minutes + ":" + secondsLeft);
+		this.secondsLeft = secondsLeft;
+		timeLabel = new JLabel(hours + " hours : " + minutes + " minutes : " + secondsLeft + " seconds");
+		timeLabel.setFont(new Font(timeLabel.getFont().getName(), Font.BOLD, 22));
 		t = new Timer();
 		add(timeLabel);
 		setPanel();
 	}
+	
+	public void refresh() {
+		timeLabel.setText(hours + " hours : " + minutes + " minutes : " + secondsLeft + " seconds");
+	}
 
 	public void setPanel() {
 		JButton startButton = new JButton("Start");
-		JButton setButton = new JButton("Set");
 		JButton pauseButton = new JButton("Pause");
 		JButton soundButton = new JButton("Select Sound");
 		Box hBox = Box.createHorizontalBox();
+		hBox.setMaximumSize(new Dimension(100, 100));
+		hBox.setBounds(hBox.getX(), hBox.getY(), 100, 100);
 		String[] hour = new String[25];
 		for (int i = 0; i < 25; i++) {
 			hour[i] = String.valueOf(i);
@@ -65,6 +72,30 @@ public class Timers extends JPanel {
 		JComboBox<String> hourField = new JComboBox<String>(hour);
 		JComboBox<String> minuteBox = new JComboBox<String>(min);
 		JComboBox<String> secondsBox = new JComboBox<String>(min);
+		hourField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				hours = Integer.parseInt((String) hourField.getSelectedItem());
+				pause();
+				refresh();
+			}
+		});
+		minuteBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				minutes = Integer.parseInt((String) minuteBox.getSelectedItem());
+				pause();
+				refresh();
+			}
+		});
+		secondsBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				secondsLeft = Integer.parseInt((String) secondsBox.getSelectedItem());
+				pause();
+				refresh();
+			}
+		});		
 		hBox.add(hourField);
 		hBox.add(new JLabel("Hours"));
 		hBox.add(minuteBox);
@@ -72,17 +103,6 @@ public class Timers extends JPanel {
 		hBox.add(secondsBox);
 		hBox.add(new JLabel("Seconds"));
 		Box hBox2 = Box.createHorizontalBox();
-		setButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				hours = Integer.parseInt((String) hourField.getSelectedItem());
-				minutes = Integer.parseInt((String) minuteBox.getSelectedItem());
-				secondsLeft = Integer.parseInt((String) secondsBox.getSelectedItem());
-				System.out.println(hours + ":" + minutes + ":" + secondsLeft);
-				timeLabel.setText(hours + " hours : " + minutes + " minutes : " + secondsLeft + " seconds");
-				pause();
-			}
-		});
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -98,7 +118,6 @@ public class Timers extends JPanel {
 		soundButton.addActionListener(chooseFileListener);
 		hBox2.add(startButton);
 		hBox2.add(pauseButton);
-		hBox2.add(setButton);
 		hBox2.add(soundButton);
 		add(hBox);
 		add(hBox2);
@@ -114,7 +133,7 @@ public class Timers extends JPanel {
 						timeLabel.setText("FINISHED!");
 					} else {
 						timeLabel.setText(hours + " hours : " + minutes + " minutes : " + secondsLeft + " seconds");
-						playSound();
+						StartAlarm.playSound(sound);
 					}
 					pause();
 					return;
@@ -123,8 +142,9 @@ public class Timers extends JPanel {
 					secondsLeft = 60;
 					minutes--;
 					if (minutes <= 0) {
-						minutes = 59;
+						minutes = 0;
 						hours--;
+						if (hours < 0) hours = 0;
 					}
 				}
 				timeLabel.setText(hours + " hours : " + minutes + " minutes : " + secondsLeft + " seconds");

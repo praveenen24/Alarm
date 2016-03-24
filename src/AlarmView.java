@@ -52,7 +52,7 @@ public class AlarmView extends JFrame implements Observer {
 		alarmList = new JList<Alarm>(alarmListModel);
 		setJMenuBar(getBar());
 		tabs.add("Alarm", alarmPanel());
-		tabs.add("Timer", new Timers(0, 0, 10));
+		tabs.add("Timer", new Timers(0, 0, 0));
 		add(tabs);
 		setSize(400,400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
