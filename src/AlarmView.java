@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Observable;
@@ -25,6 +24,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 @SuppressWarnings("serial")
@@ -34,6 +34,7 @@ public class AlarmView extends JFrame implements Observer {
 	private DefaultListModel<Alarm> alarmListModel = new DefaultListModel<Alarm>();
 	private JLabel timeLabel;
 	private Timer t;
+	private JTabbedPane tabs = new JTabbedPane();
 
 	private TimerTask task = new TimerTask() {
 		
@@ -50,16 +51,18 @@ public class AlarmView extends JFrame implements Observer {
 		model.addObserver(this);
 		alarmList = new JList<Alarm>(alarmListModel);
 		setJMenuBar(getBar());
-		add(mainPanel());
+		tabs.add("Alarm", alarmPanel());
+		tabs.add("Timer", new Timers(0, 0, 10));
+		add(tabs);
 		setSize(400,400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		t = new Timer();
 		t.scheduleAtFixedRate(task, 0, 1000);
-		model.run();
+		model.runAlarms();
 	}
 
-	public JPanel mainPanel() {
+	public JPanel alarmPanel() {
 		JPanel panel = new JPanel(new GridLayout(0,1));
 		SimpleDateFormat s = new SimpleDateFormat("HH:mm:ss");
 		timeLabel = new JLabel(s.format(Calendar.getInstance().getTime()));
@@ -170,7 +173,7 @@ public class AlarmView extends JFrame implements Observer {
 				}
 				Runnable r = new Runnable() {
 					public void run() {
-						model.run();
+						model.runAlarms();
 					}
 				};
 				new Thread(r).start();

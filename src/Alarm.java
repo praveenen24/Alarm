@@ -1,7 +1,4 @@
 import java.io.File;
-import java.sql.Time;
-import java.util.Calendar;
-import java.util.Date;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -28,6 +25,16 @@ public class Alarm {
 	
 	public int getHour() {
 		return hour;
+	}
+	
+	public String hourToString() {
+		if (hour == 0) return "0" + hour;
+		else return "" + hour;
+	}
+	
+	public String minuteToString() {
+		if (minute < 10) return "0" + minute;
+		else return "" + minute;
 	}
 	
 	public int getMinute() {
@@ -77,8 +84,8 @@ public class Alarm {
 	@Override
 	public String toString() {
 		if (isAlarmOn) {
-			return "Alarm Time: " + hour + ":" + minute + " | Current Setting: On";
+			return "Alarm Time: " + hourToString() + ":" + minuteToString() + " | Current Setting: On";
 		}
-		return "Alarm Time: " + hour + ":" + minute  + " Current Setting: Off";
+		return "Alarm Time: " + hourToString() + ":" + minuteToString()  + " Current Setting: Off";
 	}
 }
