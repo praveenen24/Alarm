@@ -1,3 +1,4 @@
+package Alarm;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -27,6 +28,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
+import Timer.Timers;
+
 @SuppressWarnings("serial")
 public class AlarmView extends JFrame implements Observer {
 	private AlarmModel model;
@@ -52,7 +55,7 @@ public class AlarmView extends JFrame implements Observer {
 		alarmList = new JList<Alarm>(alarmListModel);
 		setJMenuBar(getBar());
 		tabs.add("Alarm", alarmPanel());
-		tabs.add("Timer", new Timers(0, 0, 0));
+		tabs.add("Timer", new Timers(0, 0, 10));
 		add(tabs);
 		setSize(400,400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -155,29 +158,29 @@ public class AlarmView extends JFrame implements Observer {
 	public void update(Observable o, Object arg) {
 		Alarm a = (Alarm) arg;
 		a.playAlarm();
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				int result = snoozeOrStop();
-				if (result == 0) {
-					//int minute = Integer.parseInt(a.getMinute());
-					//minute+=1;
-					//a.setMinute(String.valueOf(minute));
-					a.setTriggered(false);
-					a.stopAlarm();
-				} else {
-					a.setTriggered(false);
-					a.setIsAlarmOn(false);
-					a.stopAlarm();
-				}
-				Runnable r = new Runnable() {
-					public void run() {
-						model.runAlarms();
-					}
-				};
-				new Thread(r).start();
-			}
-		});
+//		SwingUtilities.invokeLater(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				int result = snoozeOrStop();
+//				if (result == 0) {
+//					//int minute = Integer.parseInt(a.getMinute());
+//					//minute+=1;
+//					//a.setMinute(String.valueOf(minute));
+//					a.setTriggered(false);
+//					a.stopAlarm();
+//				} else {
+//					a.setTriggered(false);
+//					a.setIsAlarmOn(false);
+//					a.stopAlarm();
+//				}
+//				Runnable r = new Runnable() {
+//					public void run() {
+//						model.runAlarms();
+//					}
+//				};
+//				new Thread(r).start();
+//			}
+//		});
 	}
 }

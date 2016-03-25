@@ -1,3 +1,4 @@
+package Timer;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -26,6 +27,9 @@ public class Timers extends JPanel {
 	private Timer t;
 	private JLabel timeLabel;
 	private File sound;
+	private JComboBox<String> hourField;
+	private JComboBox<String> minuteBox;
+	JComboBox<String> secondsBox;
 	
 	private ActionListener chooseFileListener = new ActionListener() {
 		@Override
@@ -69,9 +73,9 @@ public class Timers extends JPanel {
 		for (int i = 0; i < 60; i++) {
 			min[i] = String.valueOf(i);
 		}
-		JComboBox<String> hourField = new JComboBox<String>(hour);
-		JComboBox<String> minuteBox = new JComboBox<String>(min);
-		JComboBox<String> secondsBox = new JComboBox<String>(min);
+		hourField = new JComboBox<String>(hour);
+		minuteBox = new JComboBox<String>(min);
+		secondsBox = new JComboBox<String>(min);
 		hourField.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -124,6 +128,9 @@ public class Timers extends JPanel {
 	}
 
 	public void start() {
+		hourField.setEnabled(false);
+		minuteBox.setEnabled(false);
+		secondsBox.setEnabled(false);
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
@@ -133,7 +140,6 @@ public class Timers extends JPanel {
 						timeLabel.setText("FINISHED!");
 					} else {
 						timeLabel.setText(hours + " hours : " + minutes + " minutes : " + secondsLeft + " seconds");
-						StartAlarm.playSound(sound);
 					}
 					pause();
 					return;
@@ -167,6 +173,9 @@ public class Timers extends JPanel {
 	}
 	
 	public void pause() {
+		hourField.setEnabled(true);
+		minuteBox.setEnabled(true);
+		secondsBox.setEnabled(true);
 		t.cancel();
 	}
 

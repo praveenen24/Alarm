@@ -1,3 +1,4 @@
+package Alarm;
 import java.io.File;
 
 import javafx.scene.media.Media;
